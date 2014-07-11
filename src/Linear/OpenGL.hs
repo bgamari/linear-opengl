@@ -8,7 +8,7 @@ import Linear
 import Linear.Affine
 import Graphics.Rendering.OpenGL.GL
 import Control.Lens       
-import Foreign
+import Foreign hiding (unsafePerformIO)
 import System.IO.Unsafe (unsafePerformIO)
 
 glMatrixToM44 :: MatrixComponent a => GLmatrix a -> IO (M44 a)
