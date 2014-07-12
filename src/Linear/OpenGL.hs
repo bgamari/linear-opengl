@@ -1,6 +1,13 @@
+-- | In addition to providing isomorphisms between GL and linear
+-- vector, point, and matrix types, this module also provides
+-- @Uniform@ instances for linear's matrix types.
+
 module Linear.OpenGL
-  ( m44GLmatrix
+  ( -- * Matrices
+    m44GLmatrix
+    -- * Points
   , vertex1P, vertex2P, vertex3P, vertex4P
+    -- * Vectors
   , vector1V, vector2V, vector3V, vector4V
   ) where
 
@@ -10,6 +17,7 @@ import Graphics.Rendering.OpenGL.GL
 import Control.Lens       
 import Foreign hiding (unsafePerformIO)
 import System.IO.Unsafe (unsafePerformIO)
+import Linear.OpenGL.MatrixUniforms
 
 glMatrixToM44 :: MatrixComponent a => GLmatrix a -> IO (M44 a)
 glMatrixToM44 m = withMatrix m $ \order p ->
@@ -28,15 +36,15 @@ glMatrixToM44 m = withMatrix m $ \order p ->
 {-# INLINABLE glMatrixToM44 #-}
 
 m44ToGLmatrix :: MatrixComponent a => M44 a -> IO (GLmatrix a)
-m44ToGLmatrix m = withNewMatrix RowMajor go
-  where
-    go n = undefined
+m44ToGLmatrix m = withNewMatrix RowMajor $ \p->poke (castPtr p) m
 {-# INLINABLE m44ToGLmatrix #-}
   
+-- | An isomorphism between GL and linear four-dimensional matrices
 m44GLmatrix :: MatrixComponent a => Iso' (M44 a) (GLmatrix a)
 m44GLmatrix = iso (unsafePerformIO . m44ToGLmatrix) (unsafePerformIO . glMatrixToM44)
 {-# INLINE m44GLmatrix #-}
 
+-- | An isomorphism between GL and linear one-dimensional points
 vertex1P :: Iso' (Point V1 a) (Vertex1 a)
 vertex1P = iso to from
   where
@@ -44,6 +52,7 @@ vertex1P = iso to from
     from (Vertex1 x) = P (V1 x)
 {-# INLINABLE vertex1P #-}
 
+-- | An isomorphism between GL and linear two-dimensional points
 vertex2P :: Iso' (Point V2 a) (Vertex2 a)
 vertex2P = iso to from
   where
@@ -51,6 +60,7 @@ vertex2P = iso to from
     from (Vertex2 x y) = P (V2 x y)
 {-# INLINABLE vertex2P #-}
 
+-- | An isomorphism between GL and linear three-dimensional points
 vertex3P :: Iso' (Point V3 a) (Vertex3 a)
 vertex3P = iso to from
   where
@@ -58,6 +68,7 @@ vertex3P = iso to from
     from (Vertex3 x y z) = P (V3 x y z)
 {-# INLINABLE vertex3P #-}
 
+-- | An isomorphism between GL and linear four-dimensional points
 vertex4P :: Iso' (Point V4 a) (Vertex4 a)
 vertex4P = iso to from
   where
@@ -65,6 +76,7 @@ vertex4P = iso to from
     from (Vertex4 x y z w) = P (V4 x y z w)
 {-# INLINABLE vertex4P #-}
 
+-- | An isomorphism between GL and linear one-dimensional vectors
 vector1V :: Iso' (V1 a) (Vector1 a)
 vector1V = iso to from
   where
@@ -72,6 +84,7 @@ vector1V = iso to from
     from (Vector1 x) = V1 x
 {-# INLINABLE vector1V #-}
 
+-- | An isomorphism between GL and linear two-dimensional vectors
 vector2V :: Iso' (V2 a) (Vector2 a)
 vector2V = iso to from
   where
@@ -79,6 +92,7 @@ vector2V = iso to from
     from (Vector2 x y) = V2 x y
 {-# INLINABLE vector2V #-}
 
+-- | An isomorphism between GL and linear three-dimensional vectors
 vector3V :: Iso' (V3 a) (Vector3 a)
 vector3V = iso to from
   where
@@ -86,6 +100,7 @@ vector3V = iso to from
     from (Vector3 x y z) = V3 x y z
 {-# INLINABLE vector3V #-}
 
+-- | An isomorphism between GL and linear four-dimensional vectors
 vector4V :: Iso' (V4 a) (Vector4 a)
 vector4V = iso to from
   where
