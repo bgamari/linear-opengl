@@ -61,12 +61,12 @@ uniformvMat (UniformLocation loc) count ptr =
 
 instance Uniform (V2 (V2 GLfloat)) where
     uniform = uniformMat
-    uniformv = uniformvMat
+    uniformv = uniformvMat -- ^ given in column-major order
 
 instance Uniform (V3 (V3 GLfloat)) where
     uniform = uniformMat
-    uniformv = uniformvMat
+    uniformv = uniformvMat -- ^ given in column-major order
 
 instance Uniform (V4 (V4 GLfloat)) where
     uniform = uniformMat
-    uniformv = uniformvMat
+    uniformv = uniformvMat -- ^ given in column-major order
