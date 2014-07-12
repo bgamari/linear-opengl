@@ -1,3 +1,7 @@
+-- | In addition to providing isomorphisms between GL and linear
+-- vector, point, and matrix types, this module also provides
+-- @Uniform@ instances for linear's matrix types.
+
 module Linear.OpenGL
   ( m44GLmatrix
   , vertex1P, vertex2P, vertex3P, vertex4P
