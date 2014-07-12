@@ -33,9 +33,7 @@ glMatrixToM44 m = withMatrix m $ \order p ->
 {-# INLINABLE glMatrixToM44 #-}
 
 m44ToGLmatrix :: MatrixComponent a => M44 a -> IO (GLmatrix a)
-m44ToGLmatrix m = withNewMatrix RowMajor go
-  where
-    go n = undefined
+m44ToGLmatrix m = withNewMatrix RowMajor $ \p->poke (castPtr p) m
 {-# INLINABLE m44ToGLmatrix #-}
   
 -- | An isomorphism between GL and linear four-dimensional matrices
