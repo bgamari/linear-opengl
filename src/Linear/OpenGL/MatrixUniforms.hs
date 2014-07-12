@@ -62,14 +62,17 @@ uniformvMat :: forall f a. UniformMatrix f
 uniformvMat (UniformLocation loc) count ptr =
     setUniformMatrix (Proxy :: Proxy (f (f a))) loc count 0 (castPtr ptr)
 
+-- | given in column-major order
 instance Uniform (V2 (V2 GLfloat)) where
     uniform = uniformMat
-    uniformv = uniformvMat -- ^ given in column-major order
+    uniformv = uniformvMat
 
+-- | given in column-major order
 instance Uniform (V3 (V3 GLfloat)) where
     uniform = uniformMat
-    uniformv = uniformvMat -- ^ given in column-major order
+    uniformv = uniformvMat
 
+-- | given in column-major order
 instance Uniform (V4 (V4 GLfloat)) where
     uniform = uniformMat
-    uniformv = uniformvMat -- ^ given in column-major order
+    uniformv = uniformvMat
