@@ -10,6 +10,7 @@ import Graphics.Rendering.OpenGL.GL
 import Control.Lens       
 import Foreign hiding (unsafePerformIO)
 import System.IO.Unsafe (unsafePerformIO)
+import Linear.OpenGL.MatrixUniforms
 
 glMatrixToM44 :: MatrixComponent a => GLmatrix a -> IO (M44 a)
 glMatrixToM44 m = withMatrix m $ \order p ->
