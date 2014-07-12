@@ -3,8 +3,11 @@
 -- @Uniform@ instances for linear's matrix types.
 
 module Linear.OpenGL
-  ( m44GLmatrix
+  ( -- * Matrices
+    m44GLmatrix
+    -- * Points
   , vertex1P, vertex2P, vertex3P, vertex4P
+    -- * Vectors
   , vector1V, vector2V, vector3V, vector4V
   ) where
 
