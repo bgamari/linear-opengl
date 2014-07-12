@@ -11,6 +11,7 @@ import Foreign
 import Graphics.Rendering.OpenGL.GL hiding (Proxy)
 import Graphics.Rendering.OpenGL.Raw.Core31
 
+import Data.Distributive
 import Linear
 
 maxComponentSize :: Int
@@ -22,14 +23,14 @@ maxNumComponents = 16
 maxUniformBufferSize :: Int
 maxUniformBufferSize = maxComponentSize * maxNumComponents
 
-class UniformMatrix a where
-    setUniformMatrix :: Proxy a -> GLint -> GLsizei -> GLboolean -> Ptr GLfloat -> IO ()
+class UniformMatrix f where
+    setUniformMatrix :: Proxy (f (f a)) -> GLint -> GLsizei -> GLboolean -> Ptr GLfloat -> IO ()
 
-instance UniformMatrix (V2 (V2 GLfloat)) where
+instance UniformMatrix V2 where
     setUniformMatrix _ = glUniformMatrix2fv
-instance UniformMatrix (V3 (V3 GLfloat)) where
+instance UniformMatrix V3 where
     setUniformMatrix _ = glUniformMatrix3fv
-instance UniformMatrix (V4 (V4 GLfloat)) where
+instance UniformMatrix V4 where
     setUniformMatrix _ = glUniformMatrix4fv
 
 getInteger1 :: GLenum -> IO GLint
@@ -37,8 +38,10 @@ getInteger1 e = alloca $ \buf -> do
     glGetIntegeri_v e 1 buf
     peek buf
 
-uniformMat :: forall a. (Storable a, UniformMatrix a)
-           => UniformLocation -> StateVar a
+uniformMat :: forall f a.
+              ( Storable (f (f a)), UniformMatrix f
+              , Distributive f, Conjugate a)
+           => UniformLocation -> StateVar (f (f a))
 uniformMat (UniformLocation loc) = makeStateVar getter setter
   where
     getter = do
@@ -47,17 +50,17 @@ uniformMat (UniformLocation loc) = makeStateVar getter setter
         p <- fromIntegral `fmap` getInteger1 gl_CURRENT_PROGRAM
         allocaBytes maxUniformBufferSize $ \buf -> do
             glGetUniformfv p loc (castPtr buf)
-            peek buf
+            adjoint `fmap` peek buf
     setter mat = do
         program <- fmap fromJust $ get currentProgram
         allocaBytes maxUniformBufferSize $ \buf -> do
-            poke buf mat
-            setUniformMatrix (Proxy :: Proxy a) loc 1 0 (castPtr buf)
+            poke buf (adjoint mat)
+            setUniformMatrix (Proxy :: Proxy (f (f a))) loc 1 0 (castPtr buf)
 
-uniformvMat :: forall a. UniformMatrix a
-            => UniformLocation -> GLsizei -> Ptr a -> IO ()
+uniformvMat :: forall f a. UniformMatrix f
+            => UniformLocation -> GLsizei -> Ptr (f (f a)) -> IO ()
 uniformvMat (UniformLocation loc) count ptr =
-    setUniformMatrix (Proxy :: Proxy a) loc count 0 (castPtr ptr)
+    setUniformMatrix (Proxy :: Proxy (f (f a))) loc count 0 (castPtr ptr)
 
 instance Uniform (V2 (V2 GLfloat)) where
     uniform = uniformMat
