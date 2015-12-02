@@ -20,11 +20,11 @@ library
   exposed-modules:     Linear.OpenGL
   other-modules:       Linear.OpenGL.MatrixUniforms
   build-depends:       base >=4.6 && <4.9,
-                       linear >=1.10 && <1.20,
+                       linear >=1.10 && <1.21,
                        lens >=4.2 && <4.14,
                        distributive >=0.4 && <0.5,
                        tagged >= 0.7 && < 0.9,
-                       OpenGL >=2.9 && <2.13,
-                       OpenGLRaw >= 1.5 && <2.6
+                       OpenGL >=2.9 && <2.14,
+                       OpenGLRaw >= 1.5 && <2.7
   hs-source-dirs:      src
   default-language:    Haskell2010
