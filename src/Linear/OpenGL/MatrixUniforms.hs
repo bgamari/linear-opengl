@@ -1,6 +1,7 @@
 {-# LANGUAGE ScopedTypeVariables #-}
 {-# LANGUAGE FlexibleInstances #-}
 {-# LANGUAGE UndecidableInstances #-}
+{-# LANGUAGE CPP #-}
 
 module Linear.OpenGL.MatrixUniforms () where
 
@@ -9,10 +10,19 @@ import Data.Proxy
 import Foreign
 
 import Graphics.Rendering.OpenGL.GL hiding (Proxy)
+#if MIN_VERSION_OpenGLRaw(3,2,0)
+import Graphics.GL.Core31
+#else
 import Graphics.Rendering.OpenGL.Raw.Core31
+#endif
 
 import Data.Distributive
 import Linear
+
+#if MIN_VERSION_OpenGLRaw(3,2,0)
+gl_CURRENT_PROGRAM :: GLenum
+gl_CURRENT_PROGRAM = GL_CURRENT_PROGRAM
+#endif
 
 maxComponentSize :: Int
 maxComponentSize = sizeOf (undefined :: GLint) `max` sizeOf (undefined :: GLfloat)
