@@ -1,5 +1,5 @@
 name:                linear-opengl
-version:             0.2.0.10
+version:             0.3.0.0
 synopsis:            Isomorphisms between linear and OpenGL types
 description:         This provides various useful utilities for mapping OpenGL vectors, vertices, and matrices to their analogues in the `linear` package
 homepage:            http://www.github.com/bgamari/linear-opengl
